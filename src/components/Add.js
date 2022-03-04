@@ -21,16 +21,8 @@ export default function Add({handleAddTask, handleCancelBtn}) {
                 onChange={(e) => setNewTask(e.target.value)}
             />
             <br/>
-            <button
-                className="btn-form"
-                type="submit">
-                Add
-            </button>
-            <button
-                className="btn-form "
-                type="button"
-                onClick={handleCancelBtn}>
-                Cancel</button>
+            <button className="btn-form" type="submit">Add</button>
+            <button className="btn-form  btn-cancel" type="button" onClick={handleCancelBtn}>Cancel</button>
         </form>
     );
 }
