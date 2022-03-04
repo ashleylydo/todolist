@@ -1,38 +1,104 @@
-.App {
-  text-align: center;
+html {
+    margin: 0.2em 6em;
+    font-family: Arial, sans-serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+::selection {
+    background-color: rgba(194, 121, 100, 0.88);
+    color: #f1ede1;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+h1 {
+    font-weight: 100;
+    font-size: 2.3em;
+    margin-bottom: 0.7em;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+label {
+    font-weight: bolder;
 }
 
-.App-link {
-  color: #61dafb;
+input[type=text] {
+    width: 85%;
+    padding: 0.7em 0.7em;
+    margin: 0.5% 0;
+    box-sizing: border-box;
+    border: 1px solid lightgray;
+    outline: none;
+    border-radius: 4px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+input[type=text]:focus {
+    box-shadow: 0 0 12px -3px lightskyblue;
+    border-color: #488bb1;
+}
+
+button {
+    cursor: pointer;
+    text-align: center;
+    padding: 0.6em 0.8em;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.btn-form:hover {
+    background-color: rgba(203, 202, 202, 0.71);
+}
+
+.btn-home:hover {
+    background-color: rgba(127, 127, 125, 0.8);
+    color: white;
+}
+
+button:active {
+    border-color: #421c66;
+    background-color: rgba(173, 170, 170, 0.71);
+}
+
+.btn-form {
+    margin-top: 0.5em;
+    background-color: white;
+    border: 2px solid lightgray;
+}
+
+.btn-form[type=button] {
+    margin-left: 0.7em;
+}
+
+.btn-home {
+    background-color: rgba(208, 208, 208, 0.8);
+    border: 2px solid rgba(208, 208, 208, 0.8);
+}
+
+.each-task {
+    margin-top: 1em;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table td, table th {
+    padding: 0.4em 1em;
+    text-align: left;
+}
+
+table td {
+    border-top: 2px solid lightgray;
+}
+
+table tr:nth-child(odd) {
+    background-color: rgba(236, 234, 234, 0.66);
+}
+
+table tr:hover {
+    background-color: rgba(243, 230, 168, 0.49);
+}
+
+table th {
+    padding-top: 0.5em;
+    padding-bottom: 0.6em;
+    background-color: white;
+    color: black;
 }
