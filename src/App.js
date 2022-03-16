@@ -1,100 +1,47 @@
-import {useState} from "react";
-import Add from "./components/Add";
-import Edit from "./components/Edit";
-import DisplayItems from "./components/DisplayItems";
-import "./App.css";
+import React from 'react'
+import { BrowserRouter as Router, Link, Route, Routes, } from 'react-router-dom'
+import { Button } from 'antd'
+import Todolist from './components/todolist/Todolist'
+import UsingAntDesign from './components/usingAntd/UsingAntd'
 
-export default function Home() {
-    const [taskList, setTaskList] = useState(["TodoList Task"]);
-    const [chooseEdit, setChooseEdit] = useState(false);
-    const [chooseAdd, setChooseAdd] = useState(false);
-    const [chosenTask, setChosenTask] = useState({id: -1, name: ""});
+function Outlet () {
+  return null
+}
 
-    function handleCancelBtn() {
-        setChooseEdit(false);
-        setChooseAdd(false);
-    }
+export default function App () {
+  return (
+    <div className="App">
+      <Router>
+        <Routes>
+          <Route path="/" element={<Layout />} />
+          <Route path="todolist" element={<Todolist />} />
+          ]
+          <Route path="ant-design" element={<UsingAntDesign />} />
+          ]
+        </Routes>
+      </Router>
+    </div>
+  )
 
-    function handleAddTask(e, newTask) {
-        e.preventDefault();
-
-        if (newTask !== "") {
-            setTaskList([...taskList, newTask]);
-            handleCancelBtn();
-        }
-    }
-
-    function handleDeleteTask(name) {
-        const removeItem = taskList.filter((task) => {
-            return task !== name;
-        });
-        setTaskList(removeItem);
-    }
-
-    function handleEditBtn() {
-        setChooseEdit(true);
-    }
-
-    function handleEditTask(index, name) {
-        setChosenTask(chosenTask => ({...chosenTask, ...{id: index, name: name}}))
-    }
-
-    function handleChanges(id, name) {
-        let tempArr = [...taskList];
-        tempArr[id] = name;
-        setTaskList(tempArr);
-    }
-
-    if (chooseAdd) {
-        return (
-            <div>
-                <Add
-                    handleAddTask={handleAddTask}
-                    handleCancelBtn={handleCancelBtn}
-                />
-            </div>
-        );
-    }
-
-    if (chooseEdit) {
-        return (
-            <div>
-                <Edit
-                    chosenTask={chosenTask}
-                    handleCancelBtn={handleCancelBtn}
-                    handleChanges={handleChanges}
-                />
-            </div>
-        );
-    }
-
+  function Layout () {
     return (
-        <div>
-            <br/>
-            <br/>
-            <button className = "btn-home" onClick={() => setChooseAdd(true)}>Add Task</button>
-            <h2>List Task</h2>
-            <table>
-                <thead>
-                <tr>
-                    <th>Name of task</th>
-                    <th>Edit Task</th>
-                    <th>Delete Task</th>
-                </tr>
-                </thead>
-                <tbody>
-                {
-                    taskList.map((name, index) => (
-                        <DisplayItems
-                            name={name}
-                            handleEditBtn={handleEditBtn}
-                            handleDeleteTask={handleDeleteTask}
-                            index={index}
-                            handleEditTask={handleEditTask}
-                        />
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    );
+      <div>
+        <nav>
+          <ul className="app-ul">
+            <li>
+              <Button type="primary" size="large">
+                <Link to="todolist">TodoList</Link>
+              </Button>
+            </li>
+            <li>
+              <Button type="primary" size="large">
+                <Link to="ant-design">Using Ant Design</Link>
+              </Button>
+            </li>
+          </ul>
+        </nav>
+        <Outlet />
+      </div>
+    )
+  }
 }
