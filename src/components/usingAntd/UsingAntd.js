@@ -4,18 +4,15 @@ import { Link } from 'react-router-dom'
 import { Button, Col, Form, Row, Space, Table, } from 'antd'
 import ModalComponent from './ModalComponent'
 import EditForm from './EditForm'
-
-const dayjs = require('dayjs')
-/* let customParseFormat = require('dayjs/plugin/customParseFormat')
-dayjs.extend(customParseFormat) */
+import moment from 'moment'
 
 export default function UsingAntd () {
   const [showEdit, setShowEdit] = useState(false)
   const [showAdd, setShowAdd] = useState(false)
   const [editData, setEditData] = useState({})
-  const [editingKey, setEditingKey] = useState('')
-
+  const [editingKey, setEditingKey] = useState([{}])
   const [form] = Form.useForm()
+
   const [dataSource, setDataSource] = useState([
     {
       key: 0,
@@ -69,6 +66,7 @@ export default function UsingAntd () {
     {
       title: 'Email',
       dataIndex: 'email',
+      key: 'email',
       width: 170,
       align: 'center',
     },
@@ -83,15 +81,12 @@ export default function UsingAntd () {
           <Button
             type="primary"
             onClick={() => {
-              // setShowEdit(true);
               handleEdit(record)
             }}
           >
-            {' '}
             Edit
           </Button>
           <Button type="primary" onClick={() => handleDelete(record.key)}>
-            {' '}
             Delete
           </Button>
         </Space>
@@ -100,35 +95,34 @@ export default function UsingAntd () {
   ]
 
   function handleEdit (data) {
-    setEditData({ ...data })
-    setEditingKey(data.key)
-    if (editData.key === editingKey) {
-      setShowEdit(true)
-    }
+    setEditData({ ...data });
+    setEditingKey([{key: data.key }]);
+    setShowEdit(true);
   }
 
-  const HandleAdd = (data) => {
-    const date = dayjs(data.dob)
+  const handleAdd = (data) => {
     setCount(count + 1)
     const newPerson = {
       key: count,
       name: data.name,
       age: data.age,
       status: data.status,
-      dob: data.dob,
+      dob: moment(data.dob).format('MMMM Do YYYY'),
       email: data.email,
     }
     setDataSource((pre) => [...pre, newPerson])
-    console.log(dataSource)
+  }
+  const updateData = (data) => {
+    setDataSource({ ...dataSource, [data.key]: data })
   }
 
-  const HandleCancel = () => {
+  const handleCancel = () => {
     if (showAdd) {
       setShowAdd(false)
     } else if (showEdit) {
       setShowEdit(false)
     }
-    form.resetFields()
+    setEditingKey([{}])
   }
 
   const handleDelete = (key) => {
@@ -168,15 +162,18 @@ export default function UsingAntd () {
           <br />
           <ModalComponent
             showAdd={showAdd}
-            HandleCancel={HandleCancel}
-            HandleAdd={HandleAdd}
+            handleCancel={handleCancel}
+            handleAdd={handleAdd}
             form={form}
           />
           <EditForm
-            form={form}
             showEdit={showEdit}
-            HandleCancel={HandleCancel}
+            handleCancel={handleCancel}
             editData={editData}
+            form={form}
+            setDataSource={setDataSource}
+            editingKey={editingKey}
+            updateData={updateData}
           />
           <Table columns={columns} dataSource={dataSource} />
         </Col>

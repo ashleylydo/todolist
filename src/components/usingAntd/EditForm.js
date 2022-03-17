@@ -1,44 +1,77 @@
 import React, { useEffect, useState } from 'react'
 import { DatePicker, Form, Input, InputNumber, Modal, Select, } from 'antd'
-import dayjs from 'dayjs'
-
-const toObject = require('dayjs/plugin/toObject')
-
-dayjs.extend(toObject)
+import moment from 'moment'
 
 export default function EditForm ({
   onChange,
   showEdit,
-  HandleCancel,
+  handleCancel,
   form,
   editData,
+  updateData,
+  editingKey,
+  setDataSource,
 }) {
+
   const [buttonDisabled, setButtonDisabled] = useState(true)
   const [fields, setFields] = useState([editData])
 
+  const handleAfterClose = () => {
+    setButtonDisabled(true)
+    form.resetFields()
+  }
   useEffect(() => {
     form.setFieldsValue({
       name: editData.name,
       age: editData.age,
       status: editData.status,
-      /* dob: dayjs(editData.dob).toObject(), */
-      dob: editData.dob,
+      dob: showEdit ? moment(editData.dob) : null,
       email: editData.email,
     })
-  }, [form, editData])
+  }, [form, editData, showEdit])
 
-  function handleFinish (fields) {
-    form.resetFields()
-    console.log(fields)
-    HandleCancel()
+  function handleOk () {
+
+
   }
+
+  function handleFinish (fields, editingKey) {
+    let array = { ...editingKey, ...fields }
+    /*updateData(array);*/
+    console.log(array)
+    /* handleCancel();*/
+  }
+
+  /*dataSource.find((fields, editingKey) => {
+    if (dataSource.key === editingKey) {
+      setDataSource[editingKey] = {
+        name: fields.name,
+        age: fields.age,
+        status: fields.status,
+        dob: moment(fields.dob),
+        email: fields.email,
+      }
+      console.log(dataSource);
+      //setEditingKey('')
+      return true
+    }
+    return dataSource;
+  })*/
+
+  /*updateData(fields, editingKey);
+        console.log(updateData(fields, editingKey));
+        form.resetFields()
+        handleCancel()*/
 
   return (
     <Modal
       forceRender
       title="Edit Information"
       visible={showEdit}
-      destroyOnClose
+      afterClose={handleAfterClose}
+      /*handleOk={handleOk}*/
+      updateData={updateData}
+      destroyOnClose={true}
       getContainer={false}
       closable={false}
       maskClosable={false}
@@ -46,22 +79,26 @@ export default function EditForm ({
       okText="Update"
       okButtonProps={{
         htmlType: 'submit',
-        form: 'addForm',
+        form: 'editForm',
         disabled: buttonDisabled,
       }}
       onOk={() => {
         form.validateFields().catch((info) => {
           console.log('Validate Failed:', info)
         })
-      }}
-      onCancel={HandleCancel}
+        setButtonDisabled(false);
+      }
+      }
+      onCancel={handleCancel}
     >
       <Form
-        id="addForm"
+        id="editForm"
         name="addForm"
         wrapperCol={{ span: 17 }}
         labelCol={{ span: 6 }}
         form={form}
+        updateData={updateData}
+
         onFinish={handleFinish}
         editData={editData}
         preserve={false}
@@ -151,7 +188,6 @@ export default function EditForm ({
           ]}
         >
           <DatePicker
-            style={{ width: '100%' }}
             picker="date"
             placeholder="Choose your date of birth"
           />

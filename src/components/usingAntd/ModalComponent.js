@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { DatePicker, Form, Input, InputNumber, Modal, Select, } from 'antd'
 
 export default function ModalComponent ({
   onChange,
   showAdd,
-  HandleAdd,
-  HandleCancel,
+  handleAdd,
+  handleCancel,
   form,
 }) {
   const [buttonDisabled, setButtonDisabled] = useState(true)
@@ -15,16 +15,14 @@ export default function ModalComponent ({
       value: '',
     },
   ])
-
-  useEffect(() => {
+  const handleAfterClose = () => {
+    setButtonDisabled(true)
     form.resetFields()
-  })
+  }
 
   function handleFinish (fields) {
-    form.resetFields()
-    console.log(fields)
-    HandleAdd(fields)
-    HandleCancel()
+    handleAdd(fields)
+    handleCancel()
   }
 
   return (
@@ -32,30 +30,31 @@ export default function ModalComponent ({
       forceRender
       title="Add a new person"
       visible={showAdd}
-      destroyOnClose
       getContainer={false}
       closable={false}
       maskClosable={false}
       width={620}
       okText="Submit"
+      onCancel={handleCancel}
+      afterClose={handleAfterClose}
+      onOk={() => {
+        form
+          .validateFields()
+          .then()
+        setButtonDisabled(false)
+      }}
       okButtonProps={{
         htmlType: 'submit',
         form: 'addForm',
         disabled: buttonDisabled,
       }}
-      onOk={() => {
-        form.validateFields().catch((info) => {
-          console.log('Validate Failed:', info)
-        })
-      }}
-      onCancel={HandleCancel}
     >
       <Form
+        form={form}
         id="addForm"
         name="addForm"
         wrapperCol={{ span: 17 }}
         labelCol={{ span: 6 }}
-        form={form}
         onFinish={handleFinish}
         preserve={false}
         fields={fields}
@@ -63,10 +62,17 @@ export default function ModalComponent ({
           onChange = (newFields) => {
             setFields(newFields)
           }
-          setButtonDisabled(
-            form.getFieldsError().some((field) => field.errors.length > 0),
-          )
-        }}
+          {
+            const anyError = form.getFieldsError().some((field) => field.errors.length > 0)
+            if (anyError) {
+              setButtonDisabled(true)
+              console.log('Validate failed: ', anyError)
+            } else {
+              setButtonDisabled(false)
+            }
+          }
+        }
+        }
       >
         <Form.Item
           label="Name"
@@ -145,12 +151,14 @@ export default function ModalComponent ({
               message: 'Date of Birth is required',
             },
           ]}
-        />
-        <DatePicker
-          style={{ width: '100%' }}
-          picker="date"
-          placeholder="What's your date of birth?"
-        />
+        >
+          <DatePicker
+            style={{ width: '100%' }}
+            picker="date"
+            placeholder="What's your date of birth?"
+            defaultValue={null}
+          />
+        </Form.Item>
         <Form.Item
           label="Email"
           name="email"
